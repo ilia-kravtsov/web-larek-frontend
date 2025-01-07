@@ -40,3 +40,7 @@ export type TProductCategory =
 	| 'дополнительное'
 	| 'кнопка'
 	| 'хард-скил';
+
+export interface IActions {
+	onClick: (event: MouseEvent) => void;
+}
