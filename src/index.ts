@@ -9,36 +9,41 @@ import { Card } from './components/view/Card';
 import { ensureElement } from './utils/utils';
 import { CardPreview } from './components/view/CardPreview';
 import { ModalWindow } from './components/view/ModalWindow';
-import { BasketModel } from './components/model/BasketService';
+import { BasketService } from './components/model/BasketService';
 import { Basket } from './components/view/Basket';
 import { BasketProduct } from './components/view/BasketProduct';
+import { Order } from './components/view/Order';
+import { OrderService } from './components/model/OrderService';
 
 const cardCatalogElement = document.querySelector('#card-catalog') as HTMLTemplateElement;
 const cardPreviewElement = document.querySelector('#card-preview') as HTMLTemplateElement;
 const basketElement = document.querySelector('#basket') as HTMLTemplateElement;
 const cardBasketElement = document.querySelector('#card-basket') as HTMLTemplateElement;
+const orderElement = document.querySelector('#order') as HTMLTemplateElement;
 
-const apiModel = new ApiService(CDN_URL, API_URL);
+const apiService = new ApiService(CDN_URL, API_URL);
 const events = new EventEmitter();
-const dataModel = new DataService(events);
+const dataService = new DataService(events);
 const modal = new ModalWindow(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(basketElement, events);
-const basketModel = new BasketModel();
+const basketService = new BasketService();
+const orderService = new OrderService(events);
+const order = new Order(orderElement, events);
 
-apiModel.getProductList()
+apiService.getProductList()
 	.then(function (data: ApiListResponse<IProduct>) {
-		dataModel.products = data.items;
+		dataService.products = data.items;
 	})
 	.catch(error => console.log(error))
 
 events.on('products:received', () => {
-	dataModel.products.forEach(product => {
+	dataService.products.forEach(product => {
 		const card = new Card(cardCatalogElement, { onClick: () => events.emit('product:select', product) });
 		ensureElement<HTMLElement>('.gallery').append(card.render(product));
 	})
 })
 
-events.on('product:select', (item: IProduct) => { dataModel.modalWindowProduct(item) });
+events.on('product:select', (item: IProduct) => { dataService.modalWindowProduct(item) });
 
 events.on('modalWindow:open', (item: IProduct) => {
 	const cardPreviewElementInstance = new CardPreview(cardPreviewElement, events)
@@ -47,14 +52,14 @@ events.on('modalWindow:open', (item: IProduct) => {
 });
 
 events.on('product:addToBasket', () => {
-	basketModel.addProduct(dataModel.product);
-	basket.updateHeaderCounter(basketModel.getProductCount());
+	basketService.addProduct(dataService.product);
+	basket.updateHeaderCounter(basketService.getProductCount());
 	modal.hide();
 });
 
 events.on('basket:open', () => {
-	basket.updateTotalPrice(basketModel.getTotalPrice());
-	basket.items = basketModel.products.map((item, index) => {
+	basket.updateTotalPrice(basketService.getTotalPrice());
+	basket.items = basketService.products.map((item, index) => {
 		const basketProduct = new BasketProduct(cardBasketElement, {
 			onClick: () => events.emit('basket:removeProductFromBasket', item),
 		});
@@ -66,13 +71,21 @@ events.on('basket:open', () => {
 });
 
 events.on('basket:removeProductFromBasket', (item: IProduct) => {
-	basketModel.removeProduct(item);
-	basket.updateHeaderCounter(basketModel.getProductCount());
-	basket.updateTotalPrice(basketModel.getTotalPrice());
-	basket.items = basketModel.products.map((product, index) => {
+	basketService.removeProduct(item);
+	basket.updateHeaderCounter(basketService.getProductCount());
+	basket.updateTotalPrice(basketService.getTotalPrice());
+	basket.items = basketService.products.map((product, index) => {
 		const basketItem = new BasketProduct(cardBasketElement, {
 			onClick: () => events.emit('basket:removeProductFromBasket', product),
 		});
 		return basketItem.render(product, index + 1);
 	});
 });
+
+events.on('order:open', () => {
+	modal.setContent(order.render())
+	modal.render();
+	orderService.items = basketService.products.map(item => item.id);
+});
+
+events.on('order:paymentSelection', (button: HTMLButtonElement) => { orderService.payment = button.name })

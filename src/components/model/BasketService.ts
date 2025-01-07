@@ -1,6 +1,6 @@
 import { IProduct } from '../../types/index';
 
-export interface IBasketModel {
+export interface IBasketService {
 	products: IProduct[];
 	getProductCount(): number;
 	getTotalPrice(): number;
@@ -9,7 +9,7 @@ export interface IBasketModel {
 	clear(): void;
 }
 
-export class BasketModel implements IBasketModel {
+export class BasketService implements IBasketService {
 	private _products: IProduct[];
 
 	constructor() {

@@ -44,3 +44,5 @@ export type TProductCategory =
 export interface IActions {
 	onClick: (event: MouseEvent) => void;
 }
+
+export type OrderError = Record<string, string>
