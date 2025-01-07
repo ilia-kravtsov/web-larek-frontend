@@ -56,11 +56,23 @@ events.on('basket:open', () => {
 	basket.updateTotalPrice(basketModel.getTotalPrice());
 	basket.items = basketModel.products.map((item, index) => {
 		const basketProduct = new BasketProduct(cardBasketElement, {
-			onClick: () => events.emit('basket:removeBasketProduct', item),
+			onClick: () => events.emit('basket:removeProductFromBasket', item),
 		});
 		return basketProduct.render(item, index + 1);
 	});
 
 	modal.setContent(basket.render());
 	modal.render();
+});
+
+events.on('basket:removeProductFromBasket', (item: IProduct) => {
+	basketModel.removeProduct(item);
+	basket.updateHeaderCounter(basketModel.getProductCount());
+	basket.updateTotalPrice(basketModel.getTotalPrice());
+	basket.items = basketModel.products.map((product, index) => {
+		const basketItem = new BasketProduct(cardBasketElement, {
+			onClick: () => events.emit('basket:removeProductFromBasket', product),
+		});
+		return basketItem.render(product, index + 1);
+	});
 });
