@@ -1,3 +1,5 @@
+import { IOrderRequest } from '../types/index';
+
 export function pascalToKebab(value: string): string {
     return value.replace(/([a-z0–9])([A-Z])/g, "$1-$2").toLowerCase();
 }
@@ -140,4 +142,15 @@ export function getElementOrLogError<T extends Element>(parent: Element, selecto
         console.error(`Element not found for selector: "${selector}".`);
     }
     return element as T;
+}
+
+export function handleErrors(
+  errors: Partial<IOrderRequest>,
+  fields: (keyof IOrderRequest)[],
+  setIsValid: (isValid: boolean) => void,
+  setErrorMessages: (message: string) => void
+): void {
+    const errorMessages = fields.map(field => errors[field]).filter(Boolean);
+    setIsValid(errorMessages.length === 0);
+    setErrorMessages(errorMessages.join('; ') || '');
 }

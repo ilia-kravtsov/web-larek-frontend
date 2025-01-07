@@ -32,21 +32,28 @@ export class OrderService implements IOrderServiceMethods, IOrderRequest {
 
 	validateOrder() {
 		const errors: OrderError = {};
-
+		console.log('address', this.address);
 		if (!this.address) {
 			errors.address = 'Address is required';
 		} else if (!this.isValidAddress(this.address)) {
 			errors.address = 'Please provide a valid address';
 		}
-
+		console.log('payment', this.payment);
 		if (!this.payment) {
 			errors.payment = 'Payment method is required';
+		} else if (!this.isValidPayment(this.payment)) {
+			errors.payment = 'Invalid payment method';
 		}
 
 		this.errors = errors;
-		this.events.emit('orderError:address', this.errors);
+		this.events.emit('orderError:address&paymentMethod', this.errors);
 
 		return this.isFormValid(errors);
+	}
+
+	private isValidPayment(payment: string): boolean {
+		const validPayments = ['cash', 'card'];
+		return validPayments.includes(payment);
 	}
 
 	private isValidAddress(address: string): boolean {
@@ -77,7 +84,7 @@ export class OrderService implements IOrderServiceMethods, IOrderRequest {
 		this.validatePhone(errors);
 
 		this.errors = errors;
-		this.events.emit('orderError:change', this.errors);
+		this.events.emit('orderError:isValid', this.errors);
 
 		return this.isFormValid(errors);
 	}

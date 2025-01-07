@@ -46,3 +46,5 @@ export interface IActions {
 }
 
 export type OrderError = Record<string, string>
+
+export type PaymentMethod = 'cash' | 'card'

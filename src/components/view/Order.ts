@@ -24,7 +24,7 @@ export class Order implements IOrder {
 		this.buttons.forEach(button => {
 			button.addEventListener('click', () => {
 				this.paymentMethod = button.name;
-				events.emit('order:paymentMethod', button);
+				events.emit('order:paymentMethod', { method: button.name });
 			});
 		});
 
