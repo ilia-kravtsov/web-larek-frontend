@@ -23,7 +23,7 @@ export class Card implements ICard {
 		protected template: HTMLTemplateElement,
 		protected actions?: IActions
 	) {
-		this._cardElement = this.template.content.querySelector('.card')!.cloneNode(true) as HTMLElement;
+		this._cardElement = this.template.content.querySelector('.card').cloneNode(true) as HTMLElement;
 		this._categoryElement = this._cardElement.querySelector('.card__category');
 		this._titleElement = this._cardElement.querySelector('.card__title') as HTMLElement | null;
 		this._imageElement = this._cardElement.querySelector('.card__image') as HTMLImageElement | null;

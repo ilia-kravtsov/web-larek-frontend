@@ -133,3 +133,11 @@ export function createElement<
     }
     return element;
 }
+
+export function getElementOrLogError<T extends Element>(parent: Element, selector: string): T {
+    const element = parent.querySelector<T>(selector);
+    if (!element) {
+        console.error(`Element not found for selector: "${selector}".`);
+    }
+    return element as T;
+}

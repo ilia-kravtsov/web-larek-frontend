@@ -1,4 +1,5 @@
 import { IEvents } from "../base/events";
+import { getElementOrLogError } from '../../utils/utils';
 
 export interface IModalWindow {
 	show(): void;
@@ -15,9 +16,9 @@ export class ModalWindow implements IModalWindow {
 
 	constructor(container: HTMLElement, private events: IEvents) {
 		this.container = container;
-		this.closeButton = this.getElementOrLogError<HTMLButtonElement>(container, '.modal__close');
-		this.content = this.getElementOrLogError<HTMLElement>(container, '.modal__content');
-		this.wrapper = this.getElementOrLogError<HTMLElement>(document.body, '.page__wrapper');
+		this.closeButton = getElementOrLogError<HTMLButtonElement>(container, '.modal__close');
+		this.content = getElementOrLogError<HTMLElement>(container, '.modal__content');
+		this.wrapper = getElementOrLogError<HTMLElement>(document.body, '.page__wrapper');
 
 		this.initializeEventListeners();
 	}
@@ -25,16 +26,8 @@ export class ModalWindow implements IModalWindow {
 	private initializeEventListeners(): void {
 		this.closeButton.addEventListener('click', () => this.hide());
 		this.container.addEventListener('click', () => this.hide());
-		const modalContent = this.getElementOrLogError<HTMLElement>(this.container, '.modal__container');
+		const modalContent = getElementOrLogError<HTMLElement>(this.container, '.modal__container');
 		modalContent.addEventListener('click', (event) => event.stopPropagation());
-	}
-
-	private getElementOrLogError<T extends Element>(parent: Element, selector: string): T {
-		const element = parent.querySelector<T>(selector);
-		if (!element) {
-			console.error(`Element not found for selector: ${selector}`);
-		}
-		return element;
 	}
 
 	setContent(content: HTMLElement): void {

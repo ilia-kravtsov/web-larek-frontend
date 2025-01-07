@@ -1,6 +1,7 @@
 import { Card } from "./Card";
 import { IActions, IProduct } from '../../types';
 import { IEvents } from '../base/events';
+import { getElementOrLogError } from '../../utils/utils';
 
 export interface ICardPreview {
 	descriptionElement: HTMLElement;
@@ -15,8 +16,8 @@ export class CardPreview extends Card implements ICardPreview {
 	constructor(template: HTMLTemplateElement, private events: IEvents, actions?: IActions) {
 		super(template, actions);
 
-		this.descriptionElement = this.getElementOrLogError(this._cardElement, '.card__text');
-		this.actionButton = this.getElementOrLogError(this._cardElement, '.card__button');
+		this.descriptionElement = getElementOrLogError(this._cardElement, '.card__text');
+		this.actionButton = getElementOrLogError(this._cardElement, '.card__button');
 
 		this.initializeEventListeners();
 	}
@@ -32,14 +33,6 @@ export class CardPreview extends Card implements ICardPreview {
 			this.actionButton.setAttribute('disabled', 'true');
 			return 'Не продается';
 		}
-	}
-
-	private getElementOrLogError<T extends Element>(parent: HTMLElement, selector: string): T {
-		const element = parent.querySelector<T>(selector);
-		if (!element) {
-			console.error(`Element not found for selector: ${selector}`);
-		}
-		return element;
 	}
 
 	render(product: IProduct): HTMLElement {

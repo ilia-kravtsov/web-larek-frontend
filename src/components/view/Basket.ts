@@ -1,4 +1,4 @@
-import { createElement } from "../../utils/utils";
+import { createElement, getElementOrLogError } from '../../utils/utils';
 import { IEvents } from "../base/events";
 
 export interface IBasket {
@@ -26,25 +26,17 @@ export class Basket implements IBasket {
 	constructor(template: HTMLTemplateElement, protected events: IEvents) {
 		this.container = template.content.querySelector('.basket')?.cloneNode(true) as HTMLElement;
 		if (!this.container) console.error('Basket container not found');
-		this.title = this.getElementOrLogError(this.container, '.modal__title');
-		this.itemList = this.getElementOrLogError(this.container, '.basket__list');
-		this.button = this.getElementOrLogError(this.container, '.basket__button');
-		this.totalPrice = this.getElementOrLogError(this.container, '.basket__price');
-		this.headerButton = this.getElementOrLogError(document.body, '.header__basket');
-		this.headerCounter = this.getElementOrLogError(document.body, '.header__basket-counter');
+		this.title = getElementOrLogError(this.container, '.modal__title');
+		this.itemList = getElementOrLogError(this.container, '.basket__list');
+		this.button = getElementOrLogError(this.container, '.basket__button');
+		this.totalPrice = getElementOrLogError(this.container, '.basket__price');
+		this.headerButton = getElementOrLogError(document.body, '.header__basket');
+		this.headerCounter = getElementOrLogError(document.body, '.header__basket-counter');
 
 		this.button.addEventListener('click', () => this.events.emit('order:open'));
 		this.headerButton.addEventListener('click', () => this.events.emit('basket:open'));
 
 		this.items = [];
-	}
-
-	getElementOrLogError<T extends Element>(parent: Element, selector: string): T {
-		const element = parent.querySelector<T>(selector);
-		if (!element) {
-			console.error(`Element with selector "${selector}" not found.`);
-		}
-		return element;
 	}
 
 	set items(items: HTMLElement[]) {

@@ -11,10 +11,12 @@ import { CardPreview } from './components/view/CardPreview';
 import { ModalWindow } from './components/view/ModalWindow';
 import { BasketModel } from './components/model/BasketService';
 import { Basket } from './components/view/Basket';
+import { BasketProduct } from './components/view/BasketProduct';
 
 const cardCatalogElement = document.querySelector('#card-catalog') as HTMLTemplateElement;
 const cardPreviewElement = document.querySelector('#card-preview') as HTMLTemplateElement;
 const basketElement = document.querySelector('#basket') as HTMLTemplateElement;
+const cardBasketElement = document.querySelector('#card-basket') as HTMLTemplateElement;
 
 const apiModel = new ApiService(CDN_URL, API_URL);
 const events = new EventEmitter();
@@ -48,4 +50,17 @@ events.on('product:addToBasket', () => {
 	basketModel.addProduct(dataModel.product);
 	basket.updateHeaderCounter(basketModel.getProductCount());
 	modal.hide();
+});
+
+events.on('basket:open', () => {
+	basket.updateTotalPrice(basketModel.getTotalPrice());
+	basket.items = basketModel.products.map((item, index) => {
+		const basketProduct = new BasketProduct(cardBasketElement, {
+			onClick: () => events.emit('basket:removeBasketProduct', item),
+		});
+		return basketProduct.render(item, index + 1);
+	});
+
+	modal.setContent(basket.render());
+	modal.render();
 });
