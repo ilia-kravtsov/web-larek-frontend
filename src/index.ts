@@ -2,7 +2,7 @@ import './scss/styles.scss';
 import { ApiService } from './components/model/ApiService';
 import { API_URL, CDN_URL } from './utils/constants';
 import { ApiListResponse } from './components/base/api';
-import { IProduct } from './types/index';
+import { IOrderRequest, IProduct, OrderError } from './types/index';
 import { EventEmitter } from './components/base/events';
 import { DataService } from './components/model/DataService';
 import { Card } from './components/view/Card';
@@ -89,3 +89,16 @@ events.on('order:open', () => {
 });
 
 events.on('order:paymentSelection', (button: HTMLButtonElement) => { orderService.payment = button.name })
+
+events.on(`order:changeAddressValue`, (data: { field: string, value: string }) => {
+	orderService.setAddress(data.field, data.value);
+});
+
+events.on('orderError:address', (errors: Partial<IOrderRequest>) => {
+	const { address, payment } = errors;
+	order.isValid = !address && !payment;
+	order.errorMessages.textContent = [address, payment]
+		.filter(Boolean)
+		.join('; ') || '';
+});
+
