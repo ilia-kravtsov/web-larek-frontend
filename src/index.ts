@@ -9,14 +9,19 @@ import { Card } from './components/view/Card';
 import { ensureElement } from './utils/utils';
 import { CardPreview } from './components/view/CardPreview';
 import { ModalWindow } from './components/view/ModalWindow';
+import { BasketModel } from './components/model/BasketService';
+import { Basket } from './components/view/Basket';
 
 const cardCatalogElement = document.querySelector('#card-catalog') as HTMLTemplateElement;
 const cardPreviewElement = document.querySelector('#card-preview') as HTMLTemplateElement;
+const basketElement = document.querySelector('#basket') as HTMLTemplateElement;
 
 const apiModel = new ApiService(CDN_URL, API_URL);
 const events = new EventEmitter();
 const dataModel = new DataService(events);
 const modal = new ModalWindow(ensureElement<HTMLElement>('#modal-container'), events);
+const basket = new Basket(basketElement, events);
+const basketModel = new BasketModel();
 
 apiModel.getProductList()
 	.then(function (data: ApiListResponse<IProduct>) {
@@ -39,3 +44,8 @@ events.on('modalWindow:open', (item: IProduct) => {
 	modal.render();
 });
 
+events.on('product:addToBasket', () => {
+	basketModel.addProduct(dataModel.product);
+	basket.updateHeaderCounter(basketModel.getProductCount());
+	modal.hide();
+});
