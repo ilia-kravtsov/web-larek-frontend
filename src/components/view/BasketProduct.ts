@@ -14,16 +14,12 @@ export class BasketProduct implements IBasketProduct {
 	private deleteButton: HTMLButtonElement;
 
 	constructor(template: HTMLTemplateElement, private actions?: IActions) {
-		const content = template.content.querySelector('.basket__item');
-		if (!content) {
-			console.error('Template content must contain a .basket__item element');
-		}
-
+		const content = getElementOrLogError<HTMLElement>('.basket__item', template.content);
 		this.basketItem = content.cloneNode(true) as HTMLElement;
-		this.indexElement = getElementOrLogError(this.basketItem, '.basket__item-index');
-		this.titleElement = getElementOrLogError(this.basketItem, '.card__title');
-		this.priceElement = getElementOrLogError(this.basketItem, '.card__price');
-		this.deleteButton = getElementOrLogError<HTMLButtonElement>(this.basketItem, '.basket__item-delete');
+		this.indexElement = getElementOrLogError('.basket__item-index', this.basketItem);
+		this.titleElement = getElementOrLogError('.card__title', this.basketItem);
+		this.priceElement = getElementOrLogError('.card__price', this.basketItem);
+		this.deleteButton = getElementOrLogError<HTMLButtonElement>('.basket__item-delete', this.basketItem);
 
 		this.removeButton();
 	}

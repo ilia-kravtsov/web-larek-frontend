@@ -16,10 +16,10 @@ export class Contacts implements IContacts {
 	errorMessages: HTMLElement;
 
 	constructor(template: HTMLTemplateElement, protected events: IEvents) {
-		this.form = template.content.querySelector('.form').cloneNode(true) as HTMLFormElement;
+		this.form = getElementOrLogError<HTMLFormElement>('.form', template.content).cloneNode(true) as HTMLFormElement;
 		this.inputs = Array.from(this.form.querySelectorAll('.form__input'));
-		this.submitButton = getElementOrLogError<HTMLButtonElement>(this.form, '.button');
-		this.errorMessages = getElementOrLogError<HTMLElement>(this.form, '.form__errors');
+		this.submitButton = getElementOrLogError<HTMLButtonElement>('.button', this.form);
+		this.errorMessages = getElementOrLogError<HTMLElement>('.form__errors', this.form);
 
 		this.attachInputListeners();
 		this.attachFormSubmitListener();

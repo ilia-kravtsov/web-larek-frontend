@@ -6,8 +6,8 @@ import { EventHandler, EventName, IOrderRequest, IProduct } from './types/index'
 import { EventEmitter } from './components/base/events';
 import { DataService } from './components/model/DataService';
 import { Card } from './components/view/Card';
-import { ensureElement, handleErrors } from './utils/utils';
-import { CardPreview } from './components/view/CardPreview';
+import { ensureElement, getElementOrLogError, handleErrors } from './utils/utils';
+import { CardDetails } from './components/view/CardDetails';
 import { ModalWindow } from './components/view/ModalWindow';
 import { BasketService } from './components/model/BasketService';
 import { Basket } from './components/view/Basket';
@@ -17,13 +17,13 @@ import { OrderService } from './components/model/OrderService';
 import { Contacts } from './components/view/Contacts';
 import { RenderSuccessWindow } from './components/view/RenderSuccessWindow';
 
-const cardCatalogElement = document.querySelector('#card-catalog') as HTMLTemplateElement;
-const cardPreviewElement = document.querySelector('#card-preview') as HTMLTemplateElement;
-const basketElement = document.querySelector('#basket') as HTMLTemplateElement;
-const cardBasketElement = document.querySelector('#card-basket') as HTMLTemplateElement;
-const orderElement = document.querySelector('#order') as HTMLTemplateElement;
-const contactsElement = document.querySelector('#contacts') as HTMLTemplateElement;
-const successTemplate = document.querySelector('#success') as HTMLTemplateElement;
+const cardCatalogElement = getElementOrLogError<HTMLTemplateElement>('#card-catalog');
+const cardPreviewElement = getElementOrLogError<HTMLTemplateElement>('#card-preview');
+const basketElement = getElementOrLogError<HTMLTemplateElement>('#basket');
+const cardBasketElement = getElementOrLogError<HTMLTemplateElement>('#card-basket');
+const orderElement = getElementOrLogError<HTMLTemplateElement>('#order');
+const contactsElement = getElementOrLogError<HTMLTemplateElement>('#contacts');
+const successTemplate = getElementOrLogError<HTMLTemplateElement>('#success');
 
 const apiService = new ApiService(CDN_URL, API_URL);
 const events = new EventEmitter();
@@ -51,7 +51,7 @@ events.on('products:received', () => {
 events.on('product:select', (item: IProduct) => { dataService.modalWindowProduct(item) });
 
 events.on('modalWindow:open', (item: IProduct) => {
-	const cardPreviewElementInstance = new CardPreview(cardPreviewElement, events)
+	const cardPreviewElementInstance = new CardDetails(cardPreviewElement, events)
 	modal.setContent(cardPreviewElementInstance.render(item))
 	modal.render();
 });

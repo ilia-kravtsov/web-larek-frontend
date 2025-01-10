@@ -3,21 +3,21 @@ import { IActions, IProduct } from '../../types';
 import { IEvents } from '../base/events';
 import { getElementOrLogError } from '../../utils/utils';
 
-export interface ICardPreview {
+export interface ICardDetails {
 	descriptionElement: HTMLElement;
 	actionButton: HTMLElement;
 	render(product: IProduct): HTMLElement;
 }
 
-export class CardPreview extends Card implements ICardPreview {
+export class CardDetails extends Card implements ICardDetails {
 	descriptionElement: HTMLElement;
 	actionButton: HTMLElement;
 
 	constructor(template: HTMLTemplateElement, private events: IEvents, actions?: IActions) {
 		super(template, actions);
 
-		this.descriptionElement = getElementOrLogError(this._cardElement, '.card__text');
-		this.actionButton = getElementOrLogError(this._cardElement, '.card__button');
+		this.descriptionElement = getElementOrLogError<HTMLElement>('.card__text', this._cardElement);
+		this.actionButton = getElementOrLogError<HTMLButtonElement>('.card__button', this._cardElement);
 
 		this.initializeEventListeners();
 	}

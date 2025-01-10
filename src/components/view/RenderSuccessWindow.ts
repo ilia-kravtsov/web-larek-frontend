@@ -15,9 +15,9 @@ export class RenderSuccessWindow implements IRenderSuccessWindow {
 
 	constructor(template: HTMLTemplateElement, private events: IEvents) {
 		const content = template.content.cloneNode(true) as DocumentFragment;
-		this.success = content.querySelector('.order-success') as HTMLElement;
-		this.description = getElementOrLogError<HTMLElement>(this.success, '.order-success__description');
-		this.button = getElementOrLogError<HTMLButtonElement>(this.success, '.order-success__close');
+		this.success = getElementOrLogError<HTMLElement>('.order-success', content);
+		this.description = getElementOrLogError<HTMLElement>('.order-success__description', this.success);
+		this.button = getElementOrLogError<HTMLButtonElement>('.order-success__close', this.success);
 
 		this.initEventListeners();
 	}

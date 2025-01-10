@@ -16,9 +16,9 @@ export class ModalWindow implements IModalWindow {
 
 	constructor(container: HTMLElement, private events: IEvents) {
 		this.container = container;
-		this.closeButton = getElementOrLogError<HTMLButtonElement>(container, '.modal__close');
-		this.content = getElementOrLogError<HTMLElement>(container, '.modal__content');
-		this.wrapper = getElementOrLogError<HTMLElement>(document.body, '.page__wrapper');
+		this.closeButton = getElementOrLogError<HTMLButtonElement>('.modal__close', container);
+		this.content = getElementOrLogError<HTMLElement>('.modal__content', container);
+		this.wrapper = getElementOrLogError<HTMLElement>('.page__wrapper', document.body);
 
 		this.initializeEventListeners();
 	}
@@ -26,7 +26,7 @@ export class ModalWindow implements IModalWindow {
 	private initializeEventListeners(): void {
 		this.closeButton.addEventListener('click', () => this.hide());
 		this.container.addEventListener('click', () => this.hide());
-		const modalContent = getElementOrLogError<HTMLElement>(this.container, '.modal__container');
+		const modalContent = getElementOrLogError<HTMLElement>('.modal__container', this.container);
 		modalContent.addEventListener('click', (event) => event.stopPropagation());
 	}
 

@@ -136,7 +136,10 @@ export function createElement<
     return element;
 }
 
-export function getElementOrLogError<T extends Element>(parent: Element, selector: string): T {
+export function getElementOrLogError<T extends Element>(
+  selector: string,
+  parent: ParentNode = document
+): T {
     const element = parent.querySelector<T>(selector);
     if (!element) {
         console.error(`Element not found for selector: "${selector}".`);

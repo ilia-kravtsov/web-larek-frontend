@@ -13,8 +13,8 @@ export abstract class BaseForm {
 		this.form = template.content.querySelector('.form').cloneNode(true) as HTMLFormElement;
 		this.inputAll = Array.from(this.form.querySelectorAll('.form__input'));
 		this.buttons = Array.from(this.form.querySelectorAll('.button_alt'));
-		this.submitButton = getElementOrLogError<HTMLButtonElement>(this.form, '.button');
-		this.formErrors = getElementOrLogError<HTMLElement>(this.form, '.form__errors');
+		this.submitButton = getElementOrLogError<HTMLButtonElement>('.button', this.form);
+		this.formErrors = getElementOrLogError<HTMLElement>('.form__errors', this.form);
 	}
 }
 

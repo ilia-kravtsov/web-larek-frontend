@@ -1,4 +1,5 @@
 import { IActions, IProduct } from '../../types/index';
+import { getElementOrLogError } from '../../utils/utils';
 
 export interface ICard {
 	render(data: IProduct): HTMLElement;
@@ -19,15 +20,12 @@ export class Card implements ICard {
 	protected _imageElement: HTMLImageElement | null = null;
 	protected _priceElement: HTMLElement | null = null;
 
-	constructor(
-		protected template: HTMLTemplateElement,
-		protected actions?: IActions
-	) {
-		this._cardElement = this.template.content.querySelector('.card').cloneNode(true) as HTMLElement;
-		this._categoryElement = this._cardElement.querySelector('.card__category');
-		this._titleElement = this._cardElement.querySelector('.card__title') as HTMLElement | null;
-		this._imageElement = this._cardElement.querySelector('.card__image') as HTMLImageElement | null;
-		this._priceElement = this._cardElement.querySelector('.card__price') as HTMLElement | null;
+	constructor( protected template: HTMLTemplateElement, protected actions?: IActions) {
+		this._cardElement = getElementOrLogError<HTMLElement>('.card', this.template.content).cloneNode(true) as HTMLElement;
+		this._categoryElement = getElementOrLogError<HTMLElement>('.card__category', this._cardElement);
+		this._titleElement = getElementOrLogError<HTMLElement>('.card__title', this._cardElement);
+		this._imageElement = getElementOrLogError<HTMLImageElement>('.card__image', this._cardElement);
+		this._priceElement = getElementOrLogError<HTMLElement>('.card__price', this._cardElement);
 
 		if (this.actions?.onClick) {
 			this._cardElement.addEventListener('click', this.actions.onClick);

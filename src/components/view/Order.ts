@@ -16,10 +16,10 @@ export class Order implements IOrder {
 	errorMessages: HTMLElement;
 
 	constructor(template: HTMLTemplateElement, protected events: IEvents) {
-		this.form = template.content.querySelector('.form').cloneNode(true) as HTMLFormElement;
+		this.form = getElementOrLogError<HTMLFormElement>('.form', template.content).cloneNode(true) as HTMLFormElement;
 		this.buttons = Array.from(this.form.querySelectorAll('.button_alt'));
-		this.submitButton = getElementOrLogError<HTMLButtonElement>(this.form, '.order__button');
-		this.errorMessages = getElementOrLogError<HTMLElement>(this.form, '.form__errors');
+		this.submitButton = getElementOrLogError<HTMLButtonElement>('.order__button', this.form);
+		this.errorMessages = getElementOrLogError<HTMLElement>('.form__errors', this.form);
 
 		this.buttons.forEach(button => {
 			button.addEventListener('click', () => {
