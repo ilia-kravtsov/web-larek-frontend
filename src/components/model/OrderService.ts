@@ -6,7 +6,7 @@ export interface IOrderServiceMethods {
 	validateOrder(): boolean;
 	setContactData(field: string, value: string): void;
 	validateContacts(): boolean;
-	getOrderDetails(): object;
+	updateOrderData(): object;
 }
 
 export class OrderService implements IOrderServiceMethods, IOrderRequest {
@@ -26,19 +26,19 @@ export class OrderService implements IOrderServiceMethods, IOrderRequest {
 		}
 
 		if (this.validateOrder()) {
-			this.events.emit('order:completed', this.getOrderDetails());
+			this.events.emit('order:completed', this.updateOrderData());
 		}
 	}
 
 	validateOrder() {
 		const errors: OrderError = {};
-		console.log('address', this.address);
+
 		if (!this.address) {
 			errors.address = 'Address is required';
 		} else if (!this.isValidAddress(this.address)) {
 			errors.address = 'Please provide a valid address';
 		}
-		console.log('payment', this.payment);
+
 		if (!this.payment) {
 			errors.payment = 'Payment method is required';
 		} else if (!this.isValidPayment(this.payment)) {
@@ -73,7 +73,7 @@ export class OrderService implements IOrderServiceMethods, IOrderRequest {
 		}
 
 		if (this.validateContacts()) {
-			this.events.emit('order:completed', this.getOrderDetails());
+			this.events.emit('order:completed', this.updateOrderData());
 		}
 	}
 
@@ -113,7 +113,7 @@ export class OrderService implements IOrderServiceMethods, IOrderRequest {
 		}
 	}
 
-	getOrderDetails() {
+	updateOrderData() {
 		return {
 			payment: this.payment,
 			email: this.email,

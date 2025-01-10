@@ -47,7 +47,7 @@ export class Contacts implements IContacts {
 	private attachFormSubmitListener(): void {
 		this.form.addEventListener('submit', (event: Event) => {
 			event.preventDefault();
-			this.events.emit('form:submitSuccess');
+			this.events.emit('renderSuccessWindow:open');
 		});
 	}
 }

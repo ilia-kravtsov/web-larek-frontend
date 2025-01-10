@@ -2,7 +2,7 @@ import './scss/styles.scss';
 import { ApiService } from './components/model/ApiService';
 import { API_URL, CDN_URL } from './utils/constants';
 import { ApiListResponse } from './components/base/api';
-import { IOrderRequest, IProduct, OrderError, PaymentMethod } from './types/index';
+import { EventHandler, EventName, IOrderRequest, IProduct } from './types/index';
 import { EventEmitter } from './components/base/events';
 import { DataService } from './components/model/DataService';
 import { Card } from './components/view/Card';
@@ -15,6 +15,7 @@ import { BasketProduct } from './components/view/BasketProduct';
 import { Order } from './components/view/Order';
 import { OrderService } from './components/model/OrderService';
 import { Contacts } from './components/view/Contacts';
+import { RenderSuccessWindow } from './components/view/RenderSuccessWindow';
 
 const cardCatalogElement = document.querySelector('#card-catalog') as HTMLTemplateElement;
 const cardPreviewElement = document.querySelector('#card-preview') as HTMLTemplateElement;
@@ -22,6 +23,7 @@ const basketElement = document.querySelector('#basket') as HTMLTemplateElement;
 const cardBasketElement = document.querySelector('#card-basket') as HTMLTemplateElement;
 const orderElement = document.querySelector('#order') as HTMLTemplateElement;
 const contactsElement = document.querySelector('#contacts') as HTMLTemplateElement;
+const successTemplate = document.querySelector('#success') as HTMLTemplateElement;
 
 const apiService = new ApiService(CDN_URL, API_URL);
 const events = new EventEmitter();
@@ -126,3 +128,28 @@ events.on('orderError:isValid', (errors: Partial<IOrderRequest>) => {
 		message => (contacts.errorMessages.textContent = message)
 	);
 });
+
+events.on('renderSuccessWindow:open', async () => {
+	try {
+		const orderData = orderService.updateOrderData();
+		const data = await apiService.postOrderRequest(orderData);
+		console.log(data);
+		const renderSuccessWindow = new RenderSuccessWindow(successTemplate, events);
+		const totalPrice = basketService.getTotalPrice();
+		modal.setContent(renderSuccessWindow.render(totalPrice));
+
+		basketService.clear();
+		basket.updateHeaderCounter(basketService.getProductCount());
+		modal.render();
+	} catch (error) {
+		console.error('Error processing order:', error);
+	}
+});
+
+const handleModalEvent = (event: EventName, action: EventHandler): void => {
+	events.on(event, action);
+};
+
+handleModalEvent('renderSuccessWindow:close', () => modal.hide());
+handleModalEvent('modal:open', () => modal.isLocked = true);
+handleModalEvent('modal:close', () => modal.isLocked = false);
