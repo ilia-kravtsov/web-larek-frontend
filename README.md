@@ -1,6 +1,6 @@
 # Проектная работа "Веб-ларек"
 
-[Открыть проект](https://ilia-kravtsov.github.io/web-larek-frontend/)
+<a href="https://ilia-kravtsov.github.io/web-larek-frontend/" target="_blank">Открыть проект</a>
 
 ## Общая структура и архитектура проектной работы:  
 
