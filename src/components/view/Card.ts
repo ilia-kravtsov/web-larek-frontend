@@ -14,7 +14,7 @@ export class Card implements ICard {
 		"другое": "other",
 	};
 
-	protected _cardElement: HTMLElement;
+	protected _cardElement: HTMLElement | null = null;
 	protected _categoryElement: HTMLElement | null = null;
 	protected _titleElement: HTMLElement | null = null;
 	protected _imageElement: HTMLImageElement | null = null;

@@ -33,7 +33,10 @@ export class BasketService implements IBasketService {
 	}
 
 	addProduct(product: IProduct): void {
-		this._products.push(product);
+		const isProductInBasket = this._products.some(p => p.id === product.id);
+		if (!isProductInBasket) {
+			this._products.push(product);
+		}
 	}
 
 	removeProduct(product: IProduct): void {

@@ -50,4 +50,5 @@ export type OrderError = Record<string, string>
 export type PaymentMethod = 'cash' | 'card'
 
 export type EventName = 'renderSuccessWindow:close' | 'modal:open' | 'modal:close';
+
 export type EventHandler = () => void;
