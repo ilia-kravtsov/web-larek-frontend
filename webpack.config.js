@@ -37,7 +37,6 @@ const config = {
     // Learn more about plugins from https://webpack.js.org/configuration/plugins/
     new DefinePlugin({
       'process.env.DEVELOPMENT': !isProduction,
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       'process.env.API_ORIGIN': JSON.stringify(process.env.API_ORIGIN ?? '')
     })
   ],
@@ -55,11 +54,7 @@ const config = {
           options: {
             sourceMap: true,
             sassOptions: {
-              includePaths: [
-                path.resolve(__dirname, 'src/scss'),
-                path.resolve(__dirname, 'src/vendor'),
-                path.resolve(__dirname, 'src/common.blocks')
-              ]
+              includePaths: ["src/scss"]
             }
           }
         }],

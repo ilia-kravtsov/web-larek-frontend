@@ -12,6 +12,7 @@
     "@webpack-cli/generators": "^3.0.2",
     "autoprefixer": "^10.4.14",
     "babel-loader": "^9.1.2",
+    "cross-env": "^7.0.3",
     "css-loader": "^6.7.3",
     "dotenv": "^16.3.1",
     "eslint": "^8.39.0",
