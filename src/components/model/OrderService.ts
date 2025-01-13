@@ -46,9 +46,10 @@ export class OrderService implements IOrderServiceMethods, IOrderRequest {
 		}
 
 		this.errors = errors;
-		this.events.emit('orderError:address&paymentMethod', this.errors);
+		const isValid = this.isFormValid(errors);
+		this.events.emit('orderForm:update', { isValid, errors });
 
-		return this.isFormValid(errors);
+		return isValid;
 	}
 
 	private isValidPayment(payment: string): boolean {

@@ -106,6 +106,7 @@ events.on('order:open', () => {
 // Обрабатываю событие выбора метода оплаты
 events.on('order:paymentMethod', (data: { method: PaymentMethod }) => {
 	orderService.payment = data.method;
+	orderService.validateOrder();
 });
 
 // Обрабатываю событие изменения значения в поле адреса
@@ -114,11 +115,11 @@ events.on(`order:changeAddressValue`, (data: { field: string, value: string }) =
 });
 
 // Обрабатываю ошибки валидации формы заказа (адрес или метод оплаты)
-events.on('orderError:address&paymentMethod', (errors: Partial<IOrderRequest>) => {
+events.on('orderForm:update', ({ isValid, errors }: { isValid: boolean; errors: Partial<IOrderRequest> }) => {
 	handleErrors(
 		errors,
 		['address', 'payment'],
-		isValid => (order.isValid = isValid),
+		() => (order.isValid = isValid),
 		message => (order.errorMessages.textContent = message)
 	);
 });
